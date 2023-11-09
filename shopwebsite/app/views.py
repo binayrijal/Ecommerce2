@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views import View
 from .models import OrderPlaced,Cart,Customer,Product
+from .forms import UserRegistrationForm
+from django.contrib import messages
 
 #def home(request):
 # return render(request, 'app/home.html')
@@ -56,8 +58,12 @@ def mobile(request,data=None):
  mobile_sets=None
  if data == None:
   mobile_sets=Product.objects.filter(category='M')
- elif data=="redmi" or data=="iphone" or data=="motorola":
+ elif data in ["redmi","iphone","Motorola"]:
   mobile_sets=Product.objects.filter(category='M').filter(brand=data)
+ elif data=='below':
+  mobile_sets=Product.objects.filter(category='M').filter(selling_price__lt=30000.0)
+ elif data=='above':
+  mobile_sets=Product.objects.filter(category='M').filter(selling_price__gte=30000.0)
  
  return render(request, 'app/mobile.html',{'mobile_sets':mobile_sets})
 
@@ -65,7 +71,19 @@ def login(request):
  return render(request, 'app/login.html')
 
 def customerregistration(request):
- return render(request, 'app/customerregistration.html')
+ if request.method=="POST":
+  form=UserRegistrationForm(request.POST)
+  if form.is_valid():
+     form.save()
+     messages.success(request,'congratulations!!Registration successfull')
+     form=UserRegistrationForm()
+     
+ else:
+  form=UserRegistrationForm()
+
+ return render(request, 'app/customerregistration.html',{
+  'form':form,
+ })
 
 def checkout(request):
  return render(request, 'app/checkout.html')
