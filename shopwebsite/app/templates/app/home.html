@@ -50,9 +50,9 @@
  <!-- Slider 1 -->
  <div class="owl-carousel" id="slider1">
   {% for t in topwears %}
-  <a href="{% url 'product-detail' %}" class="btn">
+  <a href="{% url 'product-detail' t.id %}" class="btn">
   <div class="item">
-    <img src="{{t.product_image.url}}" alt="" height="200px"><span class="fw-bold">{{t.title}}</span><br><span class="fs-5">Rs. {{t.discounted_price}}</span>
+    <img src="{{t.product_image.url}}" alt="" height="200px"><span class="fw-bold">{{t.title}}</span><br><span class="fs-5">Rs. {{t.selling_price}}</span>
   </div></a>
   {%endfor%}
   
@@ -99,30 +99,31 @@
 <div class="m-3">
   <h2>ShoppingX Deals of The Bottomwears</h2>
   <!-- Slider 1 -->
-  <div class="owl-carousel" id="slider1">
+  <div class="owl-carousel" id="slider2">
    {% for b in bottomwears %}
-   <a href="{% url 'product-detail' %}" class="btn">
+   <a href="{% url 'product-detail' b.id %}" class="btn">
    <div class="item">
-     <img src="{{b.product_image.url}}" alt="" height="200px"><span class="fw-bold">{{b.title}}</span><br><span class="fs-5">Rs. {{b.discounted_price}}</span>
+     <img src="{{b.product_image.url}}" alt="" height="200px"><span class="fw-bold">{{b.title}}</span><br><span class="fs-5">Rs. {{b.selling_price}}</span>
    </div></a>
    {%endfor%}
    
   </div>
  </div>
 <!-- End 2nd Product Slider -->
-
+ <!-- Start of  Product Slider 3 -->
 <div class="m-3">
   <h2>ShoppingX Deals of The Day Mobile Set</h2>
-  <!-- Slider 1 -->
-  <div class="owl-carousel" id="slider1">
+  
+  <div class="owl-carousel" id="slider3">
    {% for m in mobiles %}
-   <a href="{% url 'product-detail' %}" class="btn">
+   <a href="{% url 'product-detail' m.id %}" class="btn">
    <div class="item">
-     <img src="{{m.product_image.url}}" alt="" height="200px"><span class="fw-bold">{{m.title}}</span><br><span class="fs-5">Rs. {{m.discounted_price}}</span>
+     <img src="{{m.product_image.url}}" alt="" height="200px"><span class="fw-bold">{{m.title}}</span><br><span class="fs-5">Rs. {{m.selling_price}}</span>
    </div></a>
    {%endfor%}
    
   </div>
  </div>
+ <!--End of Product slider 3-->
 {% endblock main-content %}
 
