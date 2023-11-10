@@ -8,6 +8,7 @@
    <h3>Login</h3>
    <hr>
    <form action="" method="post" novalidate class="shadow p-5">
+    {%csrf_token%}
     {{form.as_p}}
 
     
