@@ -8,7 +8,10 @@ from .forms import UserLoginForm,MypasswordChangeForm,UserPasswordResetForm,MySe
 urlpatterns = [
     path('', views.ProductView.as_view(),name="home"),
     path('product-detail/<int:pk>/', views.product_detail, name='product-detail'),
-    path('cart', views.add_to_cart, name='add-to-cart'),
+    path('add-to-cart/', views.add_to_cart, name='add-to-cart'),
+
+    path('cart/',views.show_cart,name="showcart"),
+    
     path('buy/', views.buy_now, name='buy-now'),
     path('profile/', views.MyCustomerView.as_view(), name='profile'),
     path('address/', views.address, name='address'),

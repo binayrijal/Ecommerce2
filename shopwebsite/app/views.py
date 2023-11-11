@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views import View
 from .models import OrderPlaced,Cart,Customer,Product
 from .forms import UserRegistrationForm,MyCustomerForm
@@ -36,8 +36,19 @@ def product_detail(request,pk):
   })
 
 def add_to_cart(request):
+  
+  user=request.user
+  pro_id=request.GET.get('prod_id')
+  product=Product.objects.get(id=pro_id)
+  Cart(user=user,product=product).save()
+  
+  return redirect('/cart')
 
-  return render(request, 'app/addtocart.html')
+def show_cart(request):
+ if request.user.is_authenticated:
+  user=request.user
+  cart=Cart.objects.filter(user=user)
+  return render(request,'app/addtocart.html',{'carts':cart})
 
 def buy_now(request):
  return render(request, 'app/buynow.html')
@@ -45,7 +56,10 @@ def buy_now(request):
 
 
 def address(request):
- return render(request, 'app/address.html')
+ user=request.user
+ obj=Customer.objects.filter(user=user)
+
+ return render(request, 'app/address.html',{'obj':obj,'active':'btn-primary'})
 
 def orders(request):
  return render(request, 'app/orders.html')
@@ -91,7 +105,7 @@ class MyCustomerView(View):
  def get(self,request):
 
   form=MyCustomerForm()
-  return render(request,'app/profile.html',{'form':form})
+  return render(request,'app/profile.html',{'form':form,'active':'btn-primary'})
  
  def post(self,request):
   form=MyCustomerForm(request.POST)
@@ -104,6 +118,7 @@ class MyCustomerView(View):
    zipcode=form.cleaned_data['zipcode']
    reg=Customer( user=user, name=name, locality=locality, city=city, state=state, zipcode=zipcode)
    reg.save()
-   messages.success(request,'congratulation!! profile added successfully')
+   form=MyCustomerForm()
+   messages.success(request,'congratulation!! profile added successfully look it into address section')
   return render(request,'app/profile.html',{'form':form,'active':' btn-primary'})
    
