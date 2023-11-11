@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 from .models import OrderPlaced,Cart,Customer,Product
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm,MyCustomerForm
 from django.contrib import messages
 
 #def home(request):
@@ -42,8 +42,7 @@ def add_to_cart(request):
 def buy_now(request):
  return render(request, 'app/buynow.html')
 
-def profile(request):
- return render(request, 'app/profile.html')
+
 
 def address(request):
  return render(request, 'app/address.html')
@@ -86,3 +85,25 @@ def customerregistration(request):
 
 def checkout(request):
  return render(request, 'app/checkout.html')
+
+
+class MyCustomerView(View):
+ def get(self,request):
+
+  form=MyCustomerForm()
+  return render(request,'app/profile.html',{'form':form})
+ 
+ def post(self,request):
+  form=MyCustomerForm(request.POST)
+  if form.is_valid():
+   user=request.user
+   name=form.cleaned_data['name']
+   locality=form.cleaned_data['locality']
+   city=form.cleaned_data['city']
+   state=form.cleaned_data['state']
+   zipcode=form.cleaned_data['zipcode']
+   reg=Customer( user=user, name=name, locality=locality, city=city, state=state, zipcode=zipcode)
+   reg.save()
+   messages.success(request,'congratulation!! profile added successfully')
+  return render(request,'app/profile.html',{'form':form,'active':' btn-primary'})
+   
