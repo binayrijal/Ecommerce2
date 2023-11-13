@@ -3,6 +3,8 @@ from django.views import View
 from .models import OrderPlaced,Cart,Customer,Product
 from .forms import UserRegistrationForm,MyCustomerForm
 from django.contrib import messages
+from django.db.models import Q
+from django.http import JsonResponse
 
 #def home(request):
 # return render(request, 'app/home.html')
@@ -55,11 +57,41 @@ def show_cart(request):
 
   if product_cart:
    for p in product_cart:
-    price=p.product.selling_price-p.product.discounted_price
-    tempamount=(p.quantity*price)
+    tempamount=(p.quantity*p.product.selling_price)
     amount=amount+tempamount
    total_amount=amount+shipping
   return render(request,'app/addtocart.html',{'carts':cart,'amount':amount,'total_amount':total_amount})
+
+def plus_cart(request):
+ if request.method=="GET":
+  prod_id=request.GET['prod_id']
+  pluscart=Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+  pluscart.quantity+=1
+  pluscart.save()
+  amount=0.0
+  shipping=70.0
+
+  product_cart=[p for p in Cart.objects.all() if p.user==request.user]
+
+  for p in product_cart:
+   
+   tempamount=(p.quantity*p.product.selling_price)
+   amount+=tempamount
+  totalamount=amount+shipping
+
+  data={
+   'quantity':pluscart.quantity,
+   'amount':amount,
+   'totalamount':totalamount,
+  }
+  return JsonResponse(data)
+
+
+
+
+
+
+
 
 def buy_now(request):
  return render(request, 'app/buynow.html')
