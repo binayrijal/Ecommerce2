@@ -85,6 +85,59 @@ def plus_cart(request):
    'totalamount':totalamount,
   }
   return JsonResponse(data)
+ 
+
+def minus_cart(request):
+ if request.method=="GET":
+  prod_id=request.GET['prod_id']
+  pluscart=Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+  pluscart.quantity-=1
+  pluscart.save()
+  amount=0.0
+  shipping=70.0
+
+  product_cart=[p for p in Cart.objects.all() if p.user==request.user]
+
+  for p in product_cart:
+   
+   tempamount=(p.quantity*p.product.selling_price)
+   amount+=tempamount
+  totalamount=amount+shipping
+
+  data={
+   'quantity':pluscart.quantity,
+   'amount':amount,
+   'totalamount':totalamount,
+  }
+  return JsonResponse(data)
+
+def remove_cart(request):
+ if request.method=="GET":
+  prod_id=request.GET['prod_id']
+  pluscart=Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+  
+  pluscart.delete()
+  amount=0.0
+  shipping=70.0
+
+  product_cart=[p for p in Cart.objects.all() if p.user==request.user]
+
+  for p in product_cart:
+   
+   tempamount=(p.quantity*p.product.selling_price)
+   amount+=tempamount
+  totalamount=amount+shipping
+
+  data={
+   'quantity':pluscart.quantity,
+   'amount':amount,
+   'totalamount':totalamount,
+  }
+  return JsonResponse(data)
+
+
+
+
 
 
 

@@ -16,11 +16,20 @@ urlpatterns = [
     
     path('plus-cart/',views.plus_cart,name="plus-cart"),
 
+    path('minus-cart/',views.minus_cart,name="minus-cart"),
+
+    path('remove-cart/',views.remove_cart,name="remove-cart"),
+
     path('buy/', views.buy_now, name='buy-now'),
+
     path('profile/', views.MyCustomerView.as_view(), name='profile'),
+
     path('address/', views.address, name='address'),
+
     path('orders/', views.orders, name='orders'),
+
     path('changepassword/', auth_views.PasswordChangeView.as_view(template_name='app/changepassword.html',form_class=MypasswordChangeForm,success_url='/passwordchangedone/'), name='changepassword'),
+    
     path('passwordchangedone/',auth_views.PasswordChangeDoneView.as_view(template_name='app/passwordchangedone.html'),name='passwordchangedone'),
     path('mobile/', views.mobile, name='mobile'),
     path('mobilelist/<slug:data>',views.mobile,name='mobiledata'),
