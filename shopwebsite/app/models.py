@@ -57,6 +57,9 @@ class Cart(models.Model):
 
     def __str__(self):
         return str(self.id)
+    @property
+    def total_amount(self):
+        return self.quantity*self.product.selling_price
     
 STATUS_CHOICES=(
     ('Accepted','Accepted'),

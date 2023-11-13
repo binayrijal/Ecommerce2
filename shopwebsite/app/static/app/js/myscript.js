@@ -81,6 +81,7 @@ $('#slider1, #slider2, #slider3').owlCarousel({
            document.getElementById("amount").innerText=data.amount
            document.getElementById("totalamount").innerText=data.totalamount
            eml.parentNode.parentNode.parentNode.parentNode.remove()
+           
        }
     })
 

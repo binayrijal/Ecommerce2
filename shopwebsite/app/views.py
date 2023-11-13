@@ -4,7 +4,7 @@ from .models import OrderPlaced,Cart,Customer,Product
 from .forms import UserRegistrationForm,MyCustomerForm
 from django.contrib import messages
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 
 #def home(request):
 # return render(request, 'app/home.html')
@@ -158,6 +158,7 @@ def address(request):
  return render(request, 'app/address.html',{'obj':obj,'active':'btn-primary'})
 
 def orders(request):
+ 
  return render(request, 'app/orders.html')
 
 
@@ -194,7 +195,16 @@ def customerregistration(request):
  })
 
 def checkout(request):
- return render(request, 'app/checkout.html')
+ add=Customer.objects.filter(user=request.user)
+ cart_item=Cart.objects.filter(user=request.user)
+ amount=0.0
+ shipping=70.0
+ cart_product=[p for p in Cart.objects.all() if p.user==request.user]
+ for p in cart_product:
+  tempamount=(p.quantity*p.product.selling_price)
+  amount+=tempamount
+ totalamount=amount+shipping
+ return render(request, 'app/checkout.html',{'add':add,'totalamount':totalamount,'cartitem':cart_item})
 
 
 class MyCustomerView(View):
