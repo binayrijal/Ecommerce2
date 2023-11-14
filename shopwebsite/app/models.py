@@ -48,7 +48,9 @@ class Product(models.Model):
     def __str__(self) :
 
         return str(self.id)
-    
+    @property
+    def lastprice(self):
+        return self.selling_price-self.discounted_price
 
 class Cart(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -59,7 +61,7 @@ class Cart(models.Model):
         return str(self.id)
     @property
     def total_amount(self):
-        return self.quantity*self.product.selling_price
+        return self.quantity*self.product.lastprice
     
 STATUS_CHOICES=(
     ('Accepted','Accepted'),
@@ -77,3 +79,10 @@ class OrderPlaced(models.Model):
     quantity=models.PositiveIntegerField(default=1)
     ordered_date=models.DateTimeField(auto_now_add=True)
     status=models.CharField(max_length=50,choices=STATUS_CHOICES,default='Pending')
+
+
+    @property
+    def total_amount(self):
+        return self.quantity*self.product.lastprice
+
+    

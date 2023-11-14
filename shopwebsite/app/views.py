@@ -57,7 +57,8 @@ def show_cart(request):
 
   if product_cart:
    for p in product_cart:
-    tempamount=(p.quantity*p.product.selling_price)
+    price=p.product.selling_price-p.product.discounted_price
+    tempamount=(p.quantity*price)
     amount=amount+tempamount
    total_amount=amount+shipping
   return render(request,'app/addtocart.html',{'carts':cart,'amount':amount,'total_amount':total_amount})
@@ -158,8 +159,11 @@ def address(request):
  return render(request, 'app/address.html',{'obj':obj,'active':'btn-primary'})
 
 def orders(request):
+ order=OrderPlaced.objects.filter(user=request.user)
  
- return render(request, 'app/orders.html')
+ return render(request, 'app/orders.html',{
+  'order':order,
+ })
 
 
 
@@ -201,10 +205,24 @@ def checkout(request):
  shipping=70.0
  cart_product=[p for p in Cart.objects.all() if p.user==request.user]
  for p in cart_product:
-  tempamount=(p.quantity*p.product.selling_price)
+  tempamount=(p.quantity*p.product.lastprice)
   amount+=tempamount
  totalamount=amount+shipping
  return render(request, 'app/checkout.html',{'add':add,'totalamount':totalamount,'cartitem':cart_item})
+
+
+def payment_done(request):
+ cust_id=request.GET.get('custid')
+ cust=Customer.objects.get(id=cust_id)
+ cart=Cart.objects.filter(user=request.user)
+ for c in cart:
+   OrderPlaced(user=request.user,customer=cust,product=c.product,quantity=c.quantity).save()
+   c.delete()
+ return redirect("orders")
+ 
+
+
+
 
 
 class MyCustomerView(View):

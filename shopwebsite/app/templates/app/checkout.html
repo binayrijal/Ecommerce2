@@ -10,7 +10,7 @@
     <hr>
       <div class="card mb-2">
         <div class="card-body">
-          <h5>Product:{{p.title}} </h5>
+          <h5>Product:{{p.product.title}} </h5>
           <p>Quantity: {{p.quantity}}</p>
           <p class="fw-bold">Price: {{p.total_amount}}</p>
         </div>
@@ -22,19 +22,19 @@
   <div class="col-sm-4 offset-sm-1">
     <h4>Select Shipping Address</h4>
     <hr>
-    <form action="">
+    <form action="/paymentdone">
   
       {%for a in add%}
       <div class="card">
         
         <div class="card-body">
         <h5>{{a.name}}</h5>
-        <p>{{a.city}}</p>
+        <p>{{a.city}},{{a.locality}},{{a.state}}-{{a.zipcode}}</p>
         </div>
       </div>
         <div class="form-check mt-2 mb-5">
-          <input class="form-check-input" type="radio" id="radio1" value="">
-          <label class="form-check-label fw-bold" for="">
+          <input class="form-check-input" type="radio" name="custid" id="custid{{forloop.counter}}" value="{{a.id}}">
+          <label class="form-check-label fw-bold" for="custid{{forloop.counter}}">
             Address: {{forloop.counter}} </label>
         </div>
         <div class="text-end">
