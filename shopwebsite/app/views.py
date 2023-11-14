@@ -5,9 +5,14 @@ from .forms import UserRegistrationForm,MyCustomerForm
 from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse,HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+
 
 #def home(request):
 # return render(request, 'app/home.html')
+
 
 class ProductView(View):
   
@@ -28,15 +33,20 @@ class ProductView(View):
     
     })
 
+
 def product_detail(request,pk):
  product_one=Product.objects.get(pk=pk)
+ product_exist_in_cart=False
+ product_exist_in_cart=Cart.objects.filter(Q(product=product_one.id) & Q(user=request.user)).exists()
  price=product_one.selling_price-product_one.discounted_price
  if product_one:
   return render(request, 'app/productdetail.html',{
    'product_one' :product_one,
-   'price' :price
+   'price' :price,
+   'product_exist':product_exist_in_cart,
   })
 
+@login_required
 def add_to_cart(request):
   
   user=request.user
@@ -45,6 +55,8 @@ def add_to_cart(request):
   Cart(user=user,product=product).save()
   
   return redirect('/cart')
+
+
 
 def show_cart(request):
  if request.user.is_authenticated:
@@ -62,6 +74,7 @@ def show_cart(request):
     amount=amount+tempamount
    total_amount=amount+shipping
   return render(request,'app/addtocart.html',{'carts':cart,'amount':amount,'total_amount':total_amount})
+
 
 def plus_cart(request):
  if request.method=="GET":
@@ -151,7 +164,7 @@ def buy_now(request):
  return render(request, 'app/buynow.html')
 
 
-
+@login_required
 def address(request):
  user=request.user
  obj=Customer.objects.filter(user=user)
@@ -180,8 +193,10 @@ def mobile(request,data=None):
  
  return render(request, 'app/mobile.html',{'mobile_sets':mobile_sets})
 
+
 def login(request):
  return render(request, 'app/login.html')
+
 
 def customerregistration(request):
  if request.method=="POST":
@@ -198,6 +213,8 @@ def customerregistration(request):
   'form':form,
  })
 
+
+@login_required
 def checkout(request):
  add=Customer.objects.filter(user=request.user)
  cart_item=Cart.objects.filter(user=request.user)
@@ -210,7 +227,7 @@ def checkout(request):
  totalamount=amount+shipping
  return render(request, 'app/checkout.html',{'add':add,'totalamount':totalamount,'cartitem':cart_item})
 
-
+@login_required
 def payment_done(request):
  cust_id=request.GET.get('custid')
  cust=Customer.objects.get(id=cust_id)
@@ -225,6 +242,7 @@ def payment_done(request):
 
 
 
+@method_decorator(login_required,name='dispatch')
 class MyCustomerView(View):
  def get(self,request):
 

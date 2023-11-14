@@ -48,6 +48,8 @@ class Product(models.Model):
     def __str__(self) :
 
         return str(self.id)
+    
+
     @property
     def lastprice(self):
         return self.selling_price-self.discounted_price
@@ -59,9 +61,14 @@ class Cart(models.Model):
 
     def __str__(self):
         return str(self.id)
+    
+
     @property
     def total_amount(self):
         return self.quantity*self.product.lastprice
+    
+
+
     
 STATUS_CHOICES=(
     ('Accepted','Accepted'),

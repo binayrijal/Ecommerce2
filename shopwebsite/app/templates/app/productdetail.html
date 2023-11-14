@@ -12,12 +12,16 @@
    <hr>
    <p>Product Description:{{product_one.description}} Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere, at. Dignissimos rerum incidunt temporibus laudantium. Rem, eveniet corporis. Itaque delectus quae nesciunt nemo, maiores minus deserunt vel. Vero, nulla quisquam!</p> <br>
    <h4>Rs. {{price}} <small class="fw-light text-decoration-line-through">{{product_one.selling_price}}</small></h4> <br>
+   {%%if product_exist %}
 
+   <a href="{%url 'showcart' %}" class="btn btn-warning shadow px-5 px-2">Go To cart</a>
+   
+   {%else%}
    <form action=" /add-to-cart" class="d-inline">
     <input type="hidden" name="prod_id" value={{product_one.id}} id="prod_id">
     <button type="submit" class=" btn btn-primary shadow px-5 py-2">Add to cart</button>
    </form>
-
+   {%endif%}
 
 
 
