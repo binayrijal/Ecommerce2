@@ -36,14 +36,14 @@ class ProductView(View):
 
 def product_detail(request,pk):
  product_one=Product.objects.get(pk=pk)
- product_exist_in_cart=False
- product_exist_in_cart=Cart.objects.filter(Q(product=product_one.id) & Q(user=request.user)).exists()
  price=product_one.selling_price-product_one.discounted_price
+ item_already_exist=False
+ item_already_exist=Cart.objects.filter(Q(product=product_one.id) & Q(user=request.user)).exists()
  if product_one:
   return render(request, 'app/productdetail.html',{
    'product_one' :product_one,
    'price' :price,
-   'product_exist':product_exist_in_cart,
+   'item_already_exist':item_already_exist,
   })
 
 @login_required
@@ -88,8 +88,9 @@ def plus_cart(request):
   product_cart=[p for p in Cart.objects.all() if p.user==request.user]
 
   for p in product_cart:
+   price=p.product.selling_price-p.product.discounted_price
    
-   tempamount=(p.quantity*p.product.selling_price)
+   tempamount=(p.quantity*price)
    amount+=tempamount
   totalamount=amount+shipping
 
