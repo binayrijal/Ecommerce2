@@ -31,7 +31,7 @@ class UserRegistrationForm(UserCreationForm):
     class Meta:
         model=User
         fields=['username','email','password1','password2']
-        labels={'emai':'Email'}
+        labels={'email':'Email'}
 
 
 class UserLoginForm(AuthenticationForm):

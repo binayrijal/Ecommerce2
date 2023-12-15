@@ -17,9 +17,12 @@ from django.utils.decorators import method_decorator
 class ProductView(View):
   
   def get(self,request):
+   total=0
    topwears=Product.objects.filter(category='TW')
    bottomwears=Product.objects.filter(category='BW')
    mobiles=Product.objects.filter(category='M')
+   if request.user.is_authenticated:
+     total=len(Cart.objects.filter(user=request.user))
 
    # do here laptop 
 
@@ -30,6 +33,7 @@ class ProductView(View):
     'bottomwears': bottomwears,
 
     'mobiles': mobiles,
+    'total':total,
     
     })
 
@@ -38,7 +42,8 @@ def product_detail(request,pk):
  product_one=Product.objects.get(pk=pk)
  price=product_one.selling_price-product_one.discounted_price
  item_already_exist=False
- item_already_exist=Cart.objects.filter(Q(product=product_one.id) & Q(user=request.user)).exists()
+ if request.user.is_authenticated:
+  item_already_exist=Cart.objects.filter(Q(product=product_one.id) & Q(user=request.user)).exists()
  if product_one:
   return render(request, 'app/productdetail.html',{
    'product_one' :product_one,
@@ -59,13 +64,16 @@ def add_to_cart(request):
 
 
 def show_cart(request):
+ total=0
  if request.user.is_authenticated:
+  
   user=request.user
   cart=Cart.objects.filter(user=user)
   amount=0.0
   shipping=70.0
   total_amount=0.0
   product_cart=[p for p in Cart.objects.all() if p.user==request.user]
+  total=len(Cart.objects.filter(user=request.user))
 
   if product_cart:
    for p in product_cart:
@@ -73,7 +81,7 @@ def show_cart(request):
     tempamount=(p.quantity*price)
     amount=amount+tempamount
    total_amount=amount+shipping
-  return render(request,'app/addtocart.html',{'carts':cart,'amount':amount,'total_amount':total_amount})
+  return render(request,'app/addtocart.html',{'carts':cart,'amount':amount,'total_amount':total_amount,'total':total})
 
 
 def plus_cart(request):
